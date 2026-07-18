@@ -1,0 +1,17 @@
+{
+  "name": "fig-local",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-2.0-only",
+  "type": "module",
+  "bin": {
+    "fig": "./src/cli.ts"
+  },
+  "scripts": {
+    "fig": "bun run src/cli.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "kiwi-schema": "^0.5.0"
+  }
+}

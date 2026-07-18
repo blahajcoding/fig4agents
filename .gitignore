@@ -1,0 +1,17 @@
+# Dependencies and generated decoder cache
+node_modules/
+.fig-local-cache/
+
+# Figma source files and derived exports can be large or licensed separately
+*.fig
+*.scenegraph.json
+assets/
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+
+# Test and runtime output
+coverage/
+*.log
