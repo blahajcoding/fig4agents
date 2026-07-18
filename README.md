@@ -1,8 +1,12 @@
-# fig-local
+# fig4agents
 
-Offline inspection and asset extraction for Figma `.fig` exports. No Figma API or MCP required.
+An agent-first way of inspecting Figma files — no Figma MCP required.
 
 Licensed under [GPL-2.0-only](./LICENSE).
+
+## Why?
+
+The Figma MCP is extremely limited if you don't have Figma Professional. fig4agents rectifies this by allowing agents to parse Figma files, all locally (apart from downloading Figma projects).
 
 ## Commands
 
