@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { assetOutputName, inspectFig, kiwiStrings, listEntries, openFig, searchKiwiText } from "./fig.ts";
 import { decodeScenegraph, sceneSummary } from "./scene.ts";
 import { fetchFigmaScenegraph } from "./figma-api.ts";
+import { exportHtml } from "./html.ts";
 
 const [command, file, output] = process.argv.slice(2);
 
@@ -56,6 +57,13 @@ try {
       console.log(JSON.stringify({ output, assets: assets.length }, null, 2));
       break;
     }
+    case "export-html": {
+      if (!output) fail("Missing output HTML path");
+      const scene = await decodeScenegraph(archive.read("canvas.fig"), join(process.cwd(), ".fig-local-cache"));
+      const result = await exportHtml(scene, archive, output, process.argv[5]);
+      console.log(JSON.stringify({ output, frame: { id: result.frame.id, name: result.frame.name, width: result.frame.width, height: result.frame.height }, assets: result.assets }, null, 2));
+      break;
+    }
     default:
       fail(`Unknown command: ${command}`);
   }
@@ -65,6 +73,7 @@ try {
 
 function usage(): never {
   console.log("Usage: fig <inspect|tree|strings|search|scene|export-scene|export-assets> <file.fig> [query|output]");
+  console.log("       fig export-html <file.fig> <output.html> [frame-name]");
   console.log("       fig fetch <figma-url|file-key> [scenegraph.json]  (requires FIGMA_TOKEN)");
   process.exit(0);
 }

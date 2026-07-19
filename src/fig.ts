@@ -3,8 +3,11 @@ import { basename } from "node:path";
 import { ZipArchive, type ZipEntry } from "./zip.ts";
 import { inflateRawSync } from "node:zlib";
 
-// `fig-kiwie` is on-disk magic; Figma's binary encoding is commonly called Kiwi.
-const KIWI_HEADER = Buffer.from("fig-kiwie\0", "ascii");
+// `fig-kiwie` / `fig-kiwij` are on-disk magic variants; Figma's binary encoding is commonly called Kiwi.
+const KIWI_HEADERS = [Buffer.from("fig-kiwie\0", "ascii"), Buffer.from("fig-kiwij\0", "ascii")];
+function kiwiHeaderOf(canvas: Buffer): Buffer | undefined {
+  return KIWI_HEADERS.find((header) => canvas.subarray(0, header.length).equals(header));
+}
 
 export type FigSummary = {
   path: string;
@@ -72,7 +75,7 @@ export function inspectFig(path: string, archive: ZipArchive): FigSummary {
  * Further blocks need Kiwi's undocumented object codec.
  */
 export function decodeKiwiPrelude(canvas: Buffer): Buffer | undefined {
-  if (!canvas.subarray(0, KIWI_HEADER.length).equals(KIWI_HEADER) || canvas.length <= 16) return undefined;
+  if (!kiwiHeaderOf(canvas) || canvas.length <= 16) return undefined;
   try {
     return inflateRawSync(canvas.subarray(16));
   } catch {
@@ -90,7 +93,7 @@ export function kiwiStrings(canvas: Buffer): string[] {
 }
 
 export function decodeKiwiPayload(canvas: Buffer): Buffer | undefined {
-  if (!canvas.subarray(0, KIWI_HEADER.length).equals(KIWI_HEADER) || canvas.length < 20) return undefined;
+  if (!kiwiHeaderOf(canvas) || canvas.length < 20) return undefined;
   const preludeLength = canvas.readUInt32LE(12);
   const payloadOffset = 16 + preludeLength;
   if (payloadOffset + 4 > canvas.length) return undefined;
