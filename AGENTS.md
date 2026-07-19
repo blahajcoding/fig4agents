@@ -8,6 +8,7 @@ bun run fig -- search "file.fig" "query"
 bun run fig -- scene "file.fig"
 bun run fig -- export-scene "file.fig" ./scenegraph.json
 bun run fig -- export-assets "file.fig" ./assets
+bun run fig -- export-html "file.fig" ./frame.html "Frame name"
 FIGMA_TOKEN="$FIGMA_TOKEN" bun run fig -- fetch "https://www.figma.com/design/FILE_KEY/..." ./scenegraph.json
 ```
 
@@ -18,6 +19,7 @@ Workflow:
 3. Use `export-scene` when parent/child relationships are needed.
 4. Use `search` for names, labels, text, node IDs, and design-token evidence.
 5. Use `export-assets` when visual/image assets matter.
+6. Use `export-html` to turn a named frame into a standalone HTML replica. It preserves local geometry, text runs, fills, strokes, effects, embedded images, and vector paths; the final argument is optional and defaults to the first canvas.
 
 `canvas.fig` uses Figma's Kiwi codec. Current local reader decodes framing, embedded schema, Zstandard document payload, scenegraph hierarchy, metadata, thumbnail, and assets. Geometry and style fields are intentionally omitted from normalized scene output until field contract tests cover them.
 
